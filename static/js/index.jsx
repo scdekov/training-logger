@@ -17,7 +17,9 @@ class App extends React.Component{
     render() {
         return (
             <div>
+                <h3>Training Log</h3>
                 <LogRecord excercises={this.state.excercises}></LogRecord>
+                <h3>Daily Measurements</h3>
                 <DailyMeasurements></DailyMeasurements>
             </div>
         )
@@ -75,6 +77,7 @@ class LogRecord extends React.Component{
                     }
                     value={this.state.excercise}
                     onChange={(e) => this.setState({'excercise': e.target.value})}
+                    inputProps={{placeHolder: "excercise"}}
                     shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
                     onSelect={(val) => this.setState({'excercise': val})}
                 />
