@@ -29,6 +29,7 @@ class LogRecordSerializer(serializers.ModelSerializer):
 
 
 class LogRecordViewSet(mixins.ListModelMixin,
+                       mixins.UpdateModelMixin,
                        viewsets.GenericViewSet):
     queryset = LogRecord.objects.all()
     serializer_class = LogRecordSerializer

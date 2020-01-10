@@ -49,7 +49,7 @@ class LogRecord extends React.Component{
                 name: this.state.excercise,
                 reps: this.state.reps,
                 weight: this.state.weight,
-                time_legth: this.state.timeLength,
+                time_length: this.state.timeLength,
                 notes: this.state.notes,
                 is_warmup: this.state.isWarmup
             })
