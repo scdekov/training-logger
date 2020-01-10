@@ -19,14 +19,22 @@ class ExcerciseView(APIView):
 class LogRecordSerializer(serializers.ModelSerializer):
     class  Meta:
         model = LogRecord
-        fields = ('id', 'excercise', 'is_warmup', 'reps',
+        fields = ('id', 'excercise', 'excercise_name', 'is_warmup', 'reps',
                   'time_length', 'weight', 'notes', 'date_created')
+
+    excercise_name = serializers.SerializerMethodField()
+
+    def get_excercise_name(self, instance):
+        return instance.excercise.name
 
 
 class LogRecordViewSet(mixins.ListModelMixin,
                        viewsets.GenericViewSet):
     queryset = LogRecord.objects.all()
     serializer_class = LogRecordSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('excercise')
 
     def create(self, request):
         excercise = Excercise.objects.get_or_create(name=request.data.get('name'))[0]
