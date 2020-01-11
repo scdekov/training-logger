@@ -124,3 +124,12 @@ REST_FRAMEWORK = {
 
 if ENVIRONMENT == 'production':
     MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware'] + MIDDLEWARE
+
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'locale': 'en_AU',
+  'fields': 'id, email'
+}
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.10'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_KEY = getattr(credentials, 'FACEBOOK_APP_ID', None)
+SOCIAL_AUTH_FACEBOOK_SECRET = getattr(credentials, 'FACEBOOK_APP_SECRET', None)
