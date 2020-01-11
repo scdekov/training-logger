@@ -20,7 +20,7 @@ class LogRecordSerializer(serializers.ModelSerializer):
     class  Meta:
         model = LogRecord
         fields = ('id', 'excercise', 'excercise_name', 'is_warmup', 'reps',
-                  'time_length', 'weight', 'notes', 'date_created', 'test_mode')
+                  'time_length', 'weight', 'notes', 'date_created', 'test_mode', 'user')
 
     excercise_name = serializers.SerializerMethodField()
 
