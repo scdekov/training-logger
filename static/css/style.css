@@ -5,3 +5,14 @@ input, button {
 a {
     margin-right: 20px;
 }
+
+.flex-block {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.create-log-record {
+    margin-right: 40px;
+}
