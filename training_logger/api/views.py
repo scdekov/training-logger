@@ -20,7 +20,7 @@ class LogRecordSerializer(serializers.ModelSerializer):
     class  Meta:
         model = LogRecord
         fields = ('id', 'excercise', 'excercise_name', 'is_warmup', 'reps',
-                  'time_length', 'weight', 'notes', 'date_created')
+                  'time_length', 'weight', 'notes', 'date_created', 'test_mode')
 
     excercise_name = serializers.SerializerMethodField()
 
@@ -32,7 +32,7 @@ class LogRecordViewSet(mixins.ListModelMixin,
                        mixins.RetrieveModelMixin,
                        mixins.UpdateModelMixin,
                        viewsets.GenericViewSet):
-    queryset = LogRecord.objects.all()
+    queryset = LogRecord.objects.all().order_by('-date_created')
     serializer_class = LogRecordSerializer
 
     def get_queryset(self):
@@ -46,7 +46,8 @@ class LogRecordViewSet(mixins.ListModelMixin,
             reps=request.data.get('reps') or None,
             time_length=request.data.get('time_length') or None,
             weight=request.data.get('weight') or None,
-            notes=request.data.get('notes', '')
+            notes=request.data.get('notes', ''),
+            test_mode=request.data.get('test_mode', False)
         )
         return Response(status=201)
 

@@ -38,7 +38,8 @@ class LogRecord extends React.Component{
             timeLength: '',
             notes: '',
             isWarmup: false,
-            lastAdded: {}
+            lastAdded: {},
+            testMode: false
         };
     }
 
@@ -63,7 +64,8 @@ class LogRecord extends React.Component{
                 timeLength: '',
                 notes: '',
                 isWarmup: false,
-                lastAdded: data
+                lastAdded: data,
+                testMode: false
             });
         });
     }
@@ -79,7 +81,8 @@ class LogRecord extends React.Component{
             weight: data.weight,
             time_length: data.timeLength,
             notes: data.notes,
-            is_warmup: data.isWarmup
+            is_warmup: data.isWarmup,
+            test_mode: data.testMode
         });
     }
 
@@ -130,6 +133,13 @@ class LogRecord extends React.Component{
                         <input type="checkbox"
                             checked={this.state.isWarmup}
                             onChange={e => this.setState({'isWarmup': e.target.checked})}
+                            />
+                    </div>
+                    <div>
+                        <label>Test mode?</label>
+                        <input type="checkbox"
+                            checked={this.state.testMode}
+                            onChange={e => this.setState({'testMode': e.target.checked})}
                             />
                     </div>
                     <button onClick={this.onSubmit.bind(this)}>submit</button>

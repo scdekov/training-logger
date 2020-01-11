@@ -17,6 +17,7 @@ class LogRecord(models.Model):
     time_length = models.IntegerField(null=True)
     weight = models.IntegerField(null=True)
     notes = models.CharField(max_length=1024, blank=True)
+    test_mode = models.BooleanField(default=False)
 
     date_created = models.DateTimeField(auto_now_add=True)
 
