@@ -5,5 +5,6 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('api/', include('training_logger.api.urls')),
     path('', TemplateView.as_view(template_name='home.html')),
-    path('login', TemplateView.as_view(template_name='login.html'))
+    path('login', TemplateView.as_view(template_name='login.html')),
+    path('', include('social_django.urls', namespace='social'))
 ]
