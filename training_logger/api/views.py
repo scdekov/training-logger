@@ -47,7 +47,8 @@ class LogRecordViewSet(mixins.ListModelMixin,
             time_length=request.data.get('time_length') or None,
             weight=request.data.get('weight') or None,
             notes=request.data.get('notes', ''),
-            test_mode=request.data.get('test_mode', False)
+            test_mode=request.data.get('test_mode', False),
+            user=request.user
         )
         return Response(status=201)
 
@@ -63,3 +64,12 @@ class DailyMeasurementsViewSet(mixins.CreateModelMixin,
                                viewsets.GenericViewSet):
     queryset = DailyMeasurements.objects.all()
     serializer_class = DailyMeasurementsSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

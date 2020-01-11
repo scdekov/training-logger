@@ -30,11 +30,15 @@
         }(document, 'script', 'facebook-jssdk'));
     </script>
 
-    <fb:login-button
-    scope="public_profile,email"
-    onlogin="checkLoginState();">
-    </fb:login-button>
-    <a href="{% url "social:begin" "facebook" %}">facebook</a>
+    <h2>Login</h2>
+    <form method="post" action="/accounts/login/">
+        {% csrf_token %}
+        <p><label for="id_username">Username:</label> <input type="text" name="username" autofocus="" required="" id="id_username"></p>
+        <p><label for="id_password">Password:</label> <input type="password" name="password" required="" id="id_password"></p>
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="{% url "social:begin" "facebook" %}">Login with Facebook</a>
 
     <script>
         function statusChangeCallback(resp){
