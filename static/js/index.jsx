@@ -50,8 +50,12 @@ class LogRecord extends React.Component{
     createLogRecord(data) {
         return fetch('/api/log-records/', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: this._prepareData(data)
+            headers: {
+                'X-CSRFToken': Cookies.get('csrftoken'),
+                'Content-Type': 'application/json'
+            },
+            body: this._prepareData(data),
+            credentials: 'same-origin',
         }).then((resp) => {
             if (resp.status.toString()[0] !== '2') {
                 alert(resp);
@@ -82,7 +86,7 @@ class LogRecord extends React.Component{
             time_length: data.timeLength,
             notes: data.notes,
             is_warmup: data.isWarmup,
-            test_mode: data.testMode
+            test_mode: data.testMode,
         });
     }
 
@@ -173,11 +177,15 @@ class DailyMeasurements extends React.Component {
     onSubmit() {
         return fetch('/api/daily-measurements/', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': Cookies.get('csrftoken')
+            },
             body: JSON.stringify({
                 weight: this.state.weight,
                 last_night_sleep_hours: this.state.lastNightSleepHous
-            })
+            }),
+            credentials: 'same-origin',
         }).then((resp) => {
             alert(resp.status);
             this.setState({
