@@ -1,4 +1,3 @@
-mydatabase*
 venv/
 *.pyc
-*mydatabase*
+mydatabase
