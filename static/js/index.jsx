@@ -182,8 +182,8 @@ class DailyMeasurements extends React.Component {
                 'X-CSRFToken': Cookies.get('csrftoken')
             },
             body: JSON.stringify({
-                weight: this.state.weight,
-                last_night_sleep_hours: this.state.lastNightSleepHous
+                weight: this.state.weight || null,
+                last_night_sleep_hours: this.state.lastNightSleepHous || null
             }),
             credentials: 'same-origin',
         }).then((resp) => {
