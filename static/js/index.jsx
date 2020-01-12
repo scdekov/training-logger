@@ -147,7 +147,8 @@ class LogRecord extends React.Component{
                             />
                     </div>
                     <button onClick={this.onSubmit.bind(this)}>submit</button>
-                    <button onClick={this.onRepeatLast.bind(this)}>repeat last</button>
+                    <button onClick={this.onRepeatLast.bind(this)}
+                            disabled={Object.entries(this.state.lastAdded).length === 0}>repeat last</button>
                 </div>
                 {(() => Object.entries(this.state.lastAdded).length === 0 ? '' : (
                 <div>
