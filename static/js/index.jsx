@@ -58,7 +58,7 @@ class LogRecord extends React.Component{
             credentials: 'same-origin',
         }).then((resp) => {
             if (resp.status.toString()[0] !== '2') {
-                alert(resp.text);
+                resp.text().then(text => alert(text))
                 return;
             }
             this.setState({
@@ -188,7 +188,8 @@ class DailyMeasurements extends React.Component {
             credentials: 'same-origin',
         }).then((resp) => {
             if (resp.status.toString()[0] !== '2') {
-                alert(resp.text);
+                resp.text().then(text => alert(text))
+                return;
             }
             this.setState({
                 weight: '',

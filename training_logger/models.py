@@ -28,8 +28,8 @@ class LogRecord(models.Model):
 
 
 class DailyMeasurements(models.Model):
-    weight = models.FloatField()
-    last_night_sleep_hours = models.IntegerField()
+    weight = models.FloatField(null=True)
+    last_night_sleep_hours = models.IntegerField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
