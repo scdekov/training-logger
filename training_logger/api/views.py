@@ -36,7 +36,11 @@ class LogRecordViewSet(mixins.ListModelMixin,
     serializer_class = LogRecordSerializer
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related('excercise')
+        queryset = super().get_queryset().prefetch_related('excercise')
+        if self.request.query_params.get('show-all') and self.request.user.is_superuser:
+            return queryset
+
+        return queryset.filter(user=self.request.user)
 
     def create(self, request):
         excercise = Excercise.objects.get_or_create(name=request.data.get('name'))[0]
@@ -62,8 +66,15 @@ class DailyMeasurementsSerializer(serializers.ModelSerializer):
 class DailyMeasurementsViewSet(mixins.CreateModelMixin,
                                mixins.ListModelMixin,
                                viewsets.GenericViewSet):
-    queryset = DailyMeasurements.objects.all()
+    queryset = DailyMeasurements.objects.all().order_by('-date_created')
     serializer_class = DailyMeasurementsSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.query_params.get('show-all') and self.request.user.is_superuser:
+            return queryset
+
+        return queryset.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
