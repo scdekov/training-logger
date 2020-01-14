@@ -128,7 +128,7 @@ class LogRecord extends React.Component{
                             placeholder='time length seconds'/>
                     </div>
                     <div>
-                        <input type="number"
+                        <input type="text"
                             value={this.state.notes}
                             onChange={e => this.setState({'notes': e.target.value})}
                             placeholder='notes'/>
