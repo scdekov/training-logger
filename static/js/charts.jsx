@@ -11,7 +11,7 @@ class LineChart extends React.Component {
         .then(resp => resp.json())
         .then(respJson => this.setState({
             data: respJson.map(measurement => ({
-                date: moment(measurement.date_created).format('MMM Do YYYY'),
+                date: moment(measurement.date_created).format('MMM Do'),
                 weight: measurement.weight,
                 lastNightSleepHours: measurement.last_night_sleep_hours
             })).reverse()
