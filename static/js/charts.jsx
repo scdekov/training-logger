@@ -10,8 +10,7 @@ class LineChart extends React.Component {
         fetch('/api/daily-measurements/')
         .then(resp => resp.json())
         .then(respJson => this.setState({
-            data: respJson.filter(measurement => measurement.weight)
-            .map(measurement => ({
+            data: respJson.map(measurement => ({
                 date: moment(measurement.date_created).format('MMM Do YYYY'),
                 weight: measurement.weight
             })).reverse()
@@ -21,7 +20,10 @@ class LineChart extends React.Component {
     render() {
         return (
             <Recharts.LineChart width={400} height={400} data={this.state.data}>
-                <Recharts.Line type="monotone" dataKey="weight" stroke="#8884d8" />
+                <Recharts.Line connectNulls
+                               type="monotone"
+                               dataKey="weight"
+                               stroke="#8884d8" />
                 <Recharts.CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                 <Recharts.Tooltip />
                 <Recharts.XAxis dataKey="date"/>
