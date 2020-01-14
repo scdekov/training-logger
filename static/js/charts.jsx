@@ -27,7 +27,7 @@ class LineChart extends React.Component {
                 <Recharts.CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                 <Recharts.Tooltip />
                 <Recharts.XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
-                <Recharts.YAxis />
+                <Recharts.YAxis type="number" domain={['dataMin - 50', 'dataMax + 30']} />
             </Recharts.LineChart>
         );
     }
