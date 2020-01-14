@@ -12,7 +12,8 @@ class LineChart extends React.Component {
         .then(respJson => this.setState({
             data: respJson.map(measurement => ({
                 date: moment(measurement.date_created).format('MMM Do YYYY'),
-                weight: measurement.weight
+                weight: measurement.weight,
+                lastNightSleepHours: measurement.last_night_sleep_hours
             })).reverse()
         }));
     }
@@ -20,14 +21,33 @@ class LineChart extends React.Component {
     render() {
         return (
             <Recharts.LineChart width={800} height={400} data={this.state.data}>
+                <Recharts.CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+                <Recharts.Tooltip />
+                <Recharts.Legend verticalAlign="top" height={36}/>
+
                 <Recharts.Line connectNulls
                                type="monotone"
+                               strokeWidth="3"
                                dataKey="weight"
                                stroke="#8884d8" />
-                <Recharts.CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Recharts.Tooltip />
                 <Recharts.XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
-                <Recharts.YAxis type="number" domain={['dataMin - 50', 'dataMax + 30']} />
+                <Recharts.YAxis type="number"
+                                dataKey="weight"
+                                domain={['dataMin - 50', 'dataMax + 30']}>
+                </Recharts.YAxis>
+
+                <Recharts.Line connectNulls
+                               type="monotone"
+                               strokeWidth="3"
+                               dataKey="lastNightSleepHours"
+                               yAxisId="1"
+                               stroke="#505050" />
+                <Recharts.XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
+                <Recharts.YAxis type="number"
+                                yAxisId="1"
+                                dataKey="lastNightSleepHours"
+                                orientation="right"
+                                 />
             </Recharts.LineChart>
         );
     }
