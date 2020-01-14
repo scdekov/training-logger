@@ -23,6 +23,7 @@ class App extends React.Component{
                 <LogRecord excercises={this.state.excercises}></LogRecord>
                 <h3>Daily Measurements</h3>
                 <DailyMeasurements></DailyMeasurements>
+                <LineChart></LineChart>
             </div>
         )
     }
@@ -150,16 +151,16 @@ class LogRecord extends React.Component{
                     <button onClick={this.onRepeatLast.bind(this)}
                             disabled={Object.entries(this.state.lastAdded).length === 0}>repeat last</button>
                 </div>
-                {(() => Object.entries(this.state.lastAdded).length === 0 ? '' : (
-                <div>
-                    <h4>Last Added</h4>
-                    <p>Excercise: {this.state.lastAdded.excercise}</p>
-                    <p>Reps: {this.state.lastAdded.reps}</p>
-                    <p>Weight: {this.state.lastAdded.weight} kg</p>
-                    <p>Time Length: {this.state.lastAdded.timeLength}</p>
-                    <p>Notes: {this.state.lastAdded.notes}</p>
-                </div>
-                ))()}
+                {Object.entries(this.state.lastAdded).length > 0 && (
+                    <div>
+                        <h4>Last Added</h4>
+                        <p>Excercise: {this.state.lastAdded.excercise}</p>
+                        <p>Reps: {this.state.lastAdded.reps}</p>
+                        <p>Weight: {this.state.lastAdded.weight} kg</p>
+                        <p>Time Length: {this.state.lastAdded.timeLength}</p>
+                        <p>Notes: {this.state.lastAdded.notes}</p>
+                    </div>
+                )}
             </div>
         )
     }
