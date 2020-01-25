@@ -17,13 +17,40 @@ class App extends React.Component{
     render() {
         return (
             <div>
-                <a href="/api/log-records">All logs</a>
-                <a href="/api/daily-measurements">All daily measurements</a>
-                <h3>Training Log</h3>
-                <LogRecord excercises={this.state.excercises}></LogRecord>
-                <h3>Daily Measurements</h3>
-                <DailyMeasurements></DailyMeasurements>
-                <LineChart></LineChart>
+                <ReactRouterDOM.BrowserRouter history={window.history}>
+                    <div>
+                        <nav>
+                            <ul>
+                                <li>
+                                    <ReactRouterDOM.Link to="/">Add logs</ReactRouterDOM.Link>
+                                </li>
+                                <li>
+                                    <ReactRouterDOM.Link to="/charts">Charts</ReactRouterDOM.Link>
+                                </li>
+                                <li>
+                                    <a href="/api/log-records">All logs</a>
+                                </li>
+                                <li>
+                                    <a href="/api/daily-measurements">All daily measurements</a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        {/* A <Switch> looks through its children <Route>s and
+                        renders the first one that matches the current URL. */}
+                        <ReactRouterDOM.Switch>
+                            <ReactRouterDOM.Route path="/charts">
+                                <LineChart />
+                            </ReactRouterDOM.Route>
+                            <ReactRouterDOM.Route path="/">
+                                <div>
+                                    <LogRecord excercises={this.state.excercises} />
+                                    <DailyMeasurements/>
+                                </div>
+                            </ReactRouterDOM.Route>
+                        </ReactRouterDOM.Switch>
+                    </div>
+                </ReactRouterDOM.BrowserRouter>
             </div>
         )
     }
@@ -105,7 +132,7 @@ class LogRecord extends React.Component{
                         }
                         value={this.state.excercise}
                         onChange={(e) => this.setState({'excercise': e.target.value})}
-                        inputProps={{placeHolder: "excercise"}}
+                        inputProps={{placeholder: "excercise"}}
                         shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
                         onSelect={(val) => this.setState({'excercise': val})}
                     />
