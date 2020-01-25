@@ -19,4 +19,21 @@ a {
 
 .input-label {
     margin-right: 5px;
+    margin-left: 5px;
+}
+
+.number-input {
+    max-width: 50px;
+}
+
+.meal-option {
+    padding-left: 20px;
+}
+
+.food-option {
+    padding-left: 40px;
+}
+
+.remove-link {
+    padding-left: 10px;
 }

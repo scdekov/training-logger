@@ -1,12 +1,12 @@
-import tempfile
-
 from rest_framework.generics import GenericAPIView
-from rest_framework import serializers
+from rest_framework import serializers, viewsets
 
 from weasyprint import HTML
 
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+
+from training_logger.models import Food
 
 
 class NutritionPlanSerializer(serializers.Serializer):
@@ -34,3 +34,14 @@ class NutritionPlanView(GenericAPIView):
         response['Content-Disposition'] = 'inline; filename=hranitelen_plan.pdf'
         response['Content-Transfer-Encoding'] = 'binary'
         return response
+
+
+class FoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Food
+        fields = '__all__'
+
+
+class FoodViewSet(viewsets.ModelViewSet):
+    serializer_class = FoodSerializer
+    queryset = Food.objects.all()

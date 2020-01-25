@@ -3,12 +3,13 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path
 
 from training_logger.api.views import ExcerciseView, LogRecordViewSet, DailyMeasurementsViewSet
-from training_logger.api.nutrition_plan_views import NutritionPlanView
+from training_logger.api.nutrition_plan_views import NutritionPlanView, FoodViewSet
 
 
 router = DefaultRouter()
 router.register(r'log-records', LogRecordViewSet, basename='log_records')
 router.register(r'daily-measurements', DailyMeasurementsViewSet, basename='daily_measurements')
+router.register(r'food', FoodViewSet, basename='food')
 
 
 urlpatterns = [
