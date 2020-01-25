@@ -28,6 +28,9 @@ class App extends React.Component{
                                     <ReactRouterDOM.Link to="/charts">Charts</ReactRouterDOM.Link>
                                 </li>
                                 <li>
+                                    <ReactRouterDOM.Link to="/nutrition">Nutrition</ReactRouterDOM.Link>
+                                </li>
+                                <li>
                                     <a href="/api/log-records">All logs</a>
                                 </li>
                                 <li>
@@ -41,6 +44,9 @@ class App extends React.Component{
                         <ReactRouterDOM.Switch>
                             <ReactRouterDOM.Route path="/charts">
                                 <LineChart />
+                            </ReactRouterDOM.Route>
+                            <ReactRouterDOM.Route path="/nutrition">
+                                <Nutrition />
                             </ReactRouterDOM.Route>
                             <ReactRouterDOM.Route path="/">
                                 <div>

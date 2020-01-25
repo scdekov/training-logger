@@ -10,7 +10,7 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class LoginRequiredTemplateView(LoginRequiredMixin,TemplateView):
+class LoginRequiredTemplateView(LoginRequiredMixin, TemplateView):
     pass
 
 
