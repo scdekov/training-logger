@@ -6,6 +6,7 @@ import axios from "axios";
 import LogRecord from './components/log-record';
 import WeightChart from './components/charts';
 import DailyMeasurements from './components/daily-measurements';
+import ViewLogs from './components/view-logs';
 import NutritionPlan from './components/nutrition';
 import './App.css';
 
@@ -41,6 +42,9 @@ class App extends Component{
                                     <Link to="/">Add logs</Link>
                                 </li>
                                 <li>
+                                    <Link to="/view-logs">View logs</Link>
+                                </li>
+                                <li>
                                     <Link to="/charts">Charts</Link>
                                 </li>
                                 <li>
@@ -53,6 +57,9 @@ class App extends Component{
                         </nav>
 
                         <Switch>
+                            <Route path="/view-logs">
+                                <ViewLogs/>
+                            </Route>
                             <Route path="/charts">
                                 <WeightChart />
                             </Route>

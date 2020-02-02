@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from rest_framework.views import APIView
-from rest_framework import serializers, status, viewsets, mixins, decorators
+from rest_framework import serializers, status, viewsets, mixins
 from rest_framework.response import Response
 
 from training_logger.models import Excercise, LogRecord, DailyMeasurements
@@ -17,7 +19,7 @@ class ExcerciseView(APIView):
 
 
 class LogRecordSerializer(serializers.ModelSerializer):
-    class  Meta:
+    class Meta:
         model = LogRecord
         fields = ('id', 'excercise', 'excercise_name', 'is_warmup', 'reps',
                   'time_length', 'weight', 'notes', 'date_created', 'test_mode', 'user')
@@ -39,6 +41,11 @@ class LogRecordViewSet(mixins.ListModelMixin,
         queryset = super().get_queryset().prefetch_related('excercise')
         if self.request.query_params.get('show-all') and self.request.user.is_superuser:
             return queryset
+        if self.request.query_params.get('day'):
+            day = datetime.strptime(self.request.query_params['day'], '%d-%m-%Y')
+            queryset = queryset.filter(date_created__year=day.year,
+                                       date_created__month=day.month,
+                                       date_created__day=day.day)
 
         return queryset.filter(user=self.request.user)
 

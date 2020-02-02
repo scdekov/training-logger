@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Cookies from 'js-cookie';
 import ReactAutocomplete from 'react-autocomplete';
 import axios from "axios";
 import {API_URL} from '../constants';
