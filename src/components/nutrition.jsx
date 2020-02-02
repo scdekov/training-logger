@@ -1,4 +1,7 @@
-class NutritionPlan extends React.Component {
+import React, {Component} from 'react';
+import axios from 'axios';
+
+export default class NutritionPlan extends Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -22,15 +25,13 @@ class NutritionPlan extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/api/food/')
-        .then(resp => resp.json())
+        axios.get('/api/food/')
         .then(respJson => this.setState({
-            foods: respJson
+            foods: respJson.data
         }));
-        fetch('/api/nutrition-plan-states/')
-        .then(resp => resp.json())
+        axios.get('/api/nutrition-plan-states/')
         .then(respJson => this.setState({
-            states: respJson
+            states: respJson.data
         }));
     }
 
@@ -69,13 +70,7 @@ class NutritionPlan extends React.Component {
             }
         });
 
-        return fetch('/api/nutrition-plans/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': Cookies.get('csrftoken')
-            },
-            body: JSON.stringify({
+        return axios.post('/api/nutrition-plans/', {
                 name: this.state.name,
                 age: this.state.age,
                 weight: this.state.weight,
@@ -89,12 +84,8 @@ class NutritionPlan extends React.Component {
                 fat: this.state.fat,
                 nutrition_days: preparedDays,
                 raw_days: JSON.stringify(this.state.days)
-            }),
-            credentials: 'same-origin',
-        }).then(resp => {
-            resp.blob().then(pdf => {
-                this.download(pdf, 'test.pdf', 'applcation/pdf')
-            })
+        }, {responseType: 'blob'}).then(resp => {
+            this.download(new Blob([resp.data]), 'test.pdf', 'applcation/pdf')
         });
 
     }
@@ -173,7 +164,8 @@ class NutritionPlan extends React.Component {
                     <select onChange={e => this.selectState(e.target.value)}>
                         <option value=""></option>
                         {this.state.states.map((state, ix) => (
-                            <option value={ix}>calories: {state.calories}, protein: {state.protein}, carbs: {state.carbs}. fat: {state.fat}</option>
+                            <option key={ix}
+                                    value={ix}>calories: {state.calories}, protein: {state.protein}, carbs: {state.carbs}. fat: {state.fat}</option>
                         ))}
                     </select>
                 </div>
@@ -201,12 +193,11 @@ class NutritionPlan extends React.Component {
 }
 
 
-class NutritionDay extends React.Component {
+class NutritionDay extends Component {
     constructor(props) {
         super(props);
         if (Object.keys(props.initialData).length) {
             this.state = {...props.initialData};
-            console.log(this.state);
         } else {
             this.state = {
                 meals: [{}],
@@ -275,7 +266,7 @@ class NutritionDay extends React.Component {
 
     render() {
         return (
-            <div class="nutrition-day-container">
+            <div className="nutrition-day-container">
                 <div>
                     <label>Training?</label>
                     <select value={this.state.training} onChange={e => this.setState({training: e.target.value})}>
@@ -285,7 +276,7 @@ class NutritionDay extends React.Component {
                 </div>
                 {this.getSummary()}
                 {this.state.meals.map((meal, ix) => (
-                    <div>
+                    <div key={ix + 'divv'}>
                         <p key={ix+'ix'}>Meal: {ix + 1}
                         <a href="#"
                            className="remove-link"
@@ -303,8 +294,7 @@ class NutritionDay extends React.Component {
     }
 }
 
-
-class Meal extends React.Component {
+class Meal extends Component {
     constructor(props) {
         super(props);
         if (Object.keys(props.initialData).length) {
@@ -337,7 +327,7 @@ class Meal extends React.Component {
         return (
             <div className="meal-container">
                 {this.state.mealOptions.map((option, ix) => (
-                    <div className="meal-option">
+                    <div key={ix + 'div'} className="meal-option">
                         <p key={ix+'ix'}>Option: {ix + 1}
                         <a href="#"
                            className="remove-link"
@@ -357,7 +347,7 @@ class Meal extends React.Component {
 }
 
 
-class MealOption extends React.Component {
+class MealOption extends Component {
     constructor (props) {
         super(props);
         if (Object.keys(props.initialData).length) {
@@ -406,8 +396,9 @@ class MealOption extends React.Component {
             <div className="meal-option-container">
                 {this.getSummary()}
                 {this.state.foods.map((food, ix) => (
-                    <div className="food-option">
-                        <a href="#" key={ix + "remove"}
+                    <div key={ix + 'div'} className="food-option">
+                        <a href="#"
+                           key={ix + "remove"}
                            className="remove-link"
                            onClick={this.removeFood.bind(this, ix)}>remove</a>
                         <Food key={ix + "food"}
@@ -424,7 +415,7 @@ class MealOption extends React.Component {
 }
 
 
-class Food extends React.Component {
+class Food extends Component {
     constructor(props) {
         super(props);
         if (Object.keys(props.initialData).length) {

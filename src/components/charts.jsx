@@ -1,4 +1,9 @@
-class LineChart extends React.Component {
+import React, {Component} from 'react';
+import moment from 'moment';
+import axios from 'axios';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
+export default class WeightChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -7,10 +12,9 @@ class LineChart extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/api/daily-measurements/')
-        .then(resp => resp.json())
+        axios.get('/api/daily-measurements/')
         .then(respJson => this.setState({
-            data: respJson.map(measurement => ({
+            data: respJson.data.map(measurement => ({
                 date: moment(measurement.date_created).format('MMM Do'),
                 weight: measurement.weight,
                 lastNightSleepHours: measurement.last_night_sleep_hours
@@ -20,35 +24,35 @@ class LineChart extends React.Component {
 
     render() {
         return (
-            <Recharts.LineChart width={800} height={400} data={this.state.data}>
-                <Recharts.CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                <Recharts.Tooltip />
-                <Recharts.Legend verticalAlign="top" height={36}/>
+            <LineChart width={800} height={400} data={this.state.data}>
+                <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+                <Tooltip />
+                <Legend verticalAlign="top" height={36}/>
 
-                <Recharts.Line connectNulls
+                <Line connectNulls
                                type="monotone"
                                strokeWidth="3"
                                dataKey="weight"
                                stroke="#8884d8" />
-                <Recharts.XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
-                <Recharts.YAxis type="number"
+                <XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
+                <YAxis type="number"
                                 dataKey="weight"
                                 domain={['dataMin - 50', 'dataMax + 30']}>
-                </Recharts.YAxis>
+                </YAxis>
 
-                <Recharts.Line connectNulls
+                <Line connectNulls
                                type="monotone"
                                strokeWidth="3"
                                dataKey="lastNightSleepHours"
                                yAxisId="1"
                                stroke="#505050" />
-                <Recharts.XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
-                <Recharts.YAxis type="number"
+                <XAxis dataKey="date" padding={{ left: 30, right: 30 }}/>
+                <YAxis type="number"
                                 yAxisId="1"
                                 dataKey="lastNightSleepHours"
                                 orientation="right"
                                  />
-            </Recharts.LineChart>
+            </LineChart>
         );
     }
 }

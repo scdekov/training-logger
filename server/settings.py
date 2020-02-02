@@ -24,8 +24,31 @@ DEBUG = ENVIRONMENT != 'production'
 
 ALLOWED_HOSTS = ['*']
 
-# Application definition
+if ENVIRONMENT != 'production':
+    CORS_ORIGIN_WHITELIST = ['http://0.0.0.0:3000',
+                             'http://localhost:3000']
+    CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST
 
+    SESSION_COOKIE_SAMESITE = None
+    CSRF_COOKIE_SAMESITE = None
+    CORS_ALLOW_HEADERS = [
+        'accept',
+        'accept-encoding',
+        'authorization',
+        'content-type',
+        'dnt',
+        'origin',
+        'user-agent',
+        'x-csrftoken',
+        'x-requested-with',
+        'cookie',
+        'set-cookie',
+        'csrftoken'
+    ]
+    CORS_ALLOW_CREDENTIALS = True
+
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+
+    'corsheaders',
 
     'social_django',
 
@@ -51,12 +76,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if ENVIRONMENT != 'production':
+    MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
+
 ROOT_URLCONF = 'server.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,6 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "build", "static"),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -137,3 +167,4 @@ SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('FACEBOOK_APP_SECRET', None)
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
+

@@ -54,7 +54,6 @@ class NutritionPlanView(GenericAPIView):
                     for food in option:
                         new_foods[food['name']] = food
 
-        print(new_foods)
         if new_foods:
             for new_food in new_foods.values():
                 Food.objects.get_or_create(
@@ -65,7 +64,7 @@ class NutritionPlanView(GenericAPIView):
                     protein=new_food['protein'],
                     measurement=new_food['measurement'],
                     default_quantity=new_food['default_quantity'],
-                    note=new_food['note']
+                    note=new_food.get('note', '')
                 )
 
 
