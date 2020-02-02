@@ -1,3 +1,6 @@
+{% load context_processors %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,8 +73,27 @@
             <li>Прием на вода – 4 литра на ден без значение дали е тренировъчен или почивен ден.</li>
         </ul>
 
-        <h4 class="title">Хранене в тренировъчен ден</h4>
-        <p class="subtitle">Първо хранене</p>
+        {% for nutrition_day in nutrition_days %}
+            {% if nutrition_day.training %}
+                <h3 class="title">Хранене в тренировъчен ден</h3>
+            {% else %}
+                <h3 class="title">Хранене в нетренировъчен ден</h3>
+            {% endif %}
+
+            {% for meal in nutrition_day.meals %}
+                <h4>{{forloop.counter|number_to_string}} Хранене</h4>
+                {% for option in meal %}
+                    <p>Вариант {{forloop.counter}}:
+                    {% for food in option %}
+                        {% if forloop.counter != 1 %} + {% endif %}
+                        {% widthratio food.servings 1 food.default_quantity %}
+                        {{ food.measurement|measurement_to_string }} {{ food.name }}
+                        {% if food.note %} ({{food.note}}) {% endif %}
+                    {% endfor %}
+                    </p>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
     </div>
 </body>
 

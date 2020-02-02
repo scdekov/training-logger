@@ -49,3 +49,12 @@ class Food(models.Model):
     protein = models.FloatField()
     measurement = models.CharField(choices=MEASUREMENTS, max_length=128)
     default_quantity = models.IntegerField()
+    note = models.CharField(max_length=1024)
+
+
+class NutritionPlanState(models.Model):
+    calories = models.IntegerField()
+    fat = models.FloatField()
+    carbs = models.FloatField()
+    protein = models.FloatField()
+    state = models.TextField()

@@ -1,5 +1,5 @@
-class Nutrition extends React.Component {
-    constructor(props) {
+class NutritionPlan extends React.Component {
+    constructor (props) {
         super(props);
         this.state = {
             name: '',
@@ -15,8 +15,9 @@ class Nutrition extends React.Component {
             fat: '',
 
             foods: [],
+            days: [],
 
-            meals: [{}]
+            states: []
         }
     }
 
@@ -26,9 +27,48 @@ class Nutrition extends React.Component {
         .then(respJson => this.setState({
             foods: respJson
         }));
+        fetch('/api/nutrition-plan-states/')
+        .then(resp => resp.json())
+        .then(respJson => this.setState({
+            states: respJson
+        }));
+    }
+
+    updateDayData(ix, dayData) {
+        var newDays = [...this.state.days];
+        newDays[ix] = dayData;
+        this.setState({days: newDays});
+    }
+
+    removeDay(ix) {
+        var days = [...this.state.days];
+        days.splice(ix, 1);
+        this.setState({days: days});
+    }
+
+    selectState (ix) {
+        if (!ix) {
+            this.setState({days: []});
+        } else {
+            this.setState({days: JSON.parse(this.state.states[ix].state)});
+        }
     }
 
     generateNutritionPlan () {
+        var preparedDays = this.state.days.map((day, ix) => {
+            return {
+                training: day.training === "true" ? true : false,
+                ix: ix,
+                meals: day.meals.map((meal, ix) => {
+                    return meal.mealOptions.map(mealOption => {
+                        return mealOption.foods.map(food => {
+                            return food.selectedFood;
+                        })
+                    })
+                })
+            }
+        });
+
         return fetch('/api/nutrition-plans/', {
             method: 'POST',
             headers: {
@@ -47,6 +87,8 @@ class Nutrition extends React.Component {
                 protein: this.state.protein,
                 carbs: this.state.carbs,
                 fat: this.state.fat,
+                nutrition_days: preparedDays,
+                raw_days: JSON.stringify(this.state.days)
             }),
             credentials: 'same-origin',
         }).then(resp => {
@@ -65,19 +107,7 @@ class Nutrition extends React.Component {
             a.click();
     }
 
-    removeMeal(ix) {
-        var meals = [...this.state.meals];
-        meals.splice(ix, 1);
-        this.setState({meals: meals});
-    }
-
-    updateMealData(ix, mealData) {
-        var newMeals = [...this.state.meals];
-        newMeals[ix] = mealData;
-        this.setState({meals: newMeals});
-    }
-
-    render() {
+    render () {
         return (
             <div>
                 <h3>Client Info</h3>
@@ -138,7 +168,122 @@ class Nutrition extends React.Component {
                         onChange={e => this.setState({'fat': e.target.value})}/>
                 </div>
 
-                <h3>Meals</h3>
+                <div className="preload-state">
+                    <label className="input-label">Preload</label>
+                    <select onChange={e => this.selectState(e.target.value)}>
+                        <option value=""></option>
+                        {this.state.states.map((state, ix) => (
+                            <option value={ix}>calories: {state.calories}, protein: {state.protein}, carbs: {state.carbs}. fat: {state.fat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {this.state.days.map((day, ix) => (
+                    <div key={ix+"div"}>
+                        <h3 key={ix+"h3"}>Day {ix + 1} Meals <a href="#"
+                           className="remove-link"
+                           key={ix+'remove'}
+                           onClick={this.removeDay.bind(this, ix)}>remove</a>
+                        </h3>
+                        <NutritionDay key={ix}
+                                      foods={this.state.foods}
+                                      initialData={day}
+                                      updateData={this.updateDayData.bind(this, ix)} />
+                    </div>
+                ))}
+                <div>
+                    <button onClick={() => this.setState({days: [...this.state.days, {}]})}>Add day</button>
+                    <button onClick={this.generateNutritionPlan.bind(this)}>Generate</button>
+                </div>
+            </div>
+        )
+    }
+}
+
+
+class NutritionDay extends React.Component {
+    constructor(props) {
+        super(props);
+        if (Object.keys(props.initialData).length) {
+            this.state = {...props.initialData};
+            console.log(this.state);
+        } else {
+            this.state = {
+                meals: [{}],
+                training: false
+            }
+        }
+    }
+
+    removeMeal(ix) {
+        var meals = [...this.state.meals];
+        meals.splice(ix, 1);
+        this.setState({meals: meals});
+    }
+
+    setState(state) {
+        this.props.updateData({...this.state, ...state});
+        super.setState(state);
+    }
+
+    updateMealData(ix, mealData) {
+        var newMeals = [...this.state.meals];
+        newMeals[ix] = mealData;
+        this.setState({meals: newMeals});
+    }
+
+    getMealSummary(meal, key, max) {
+        var prepared = (meal.mealOptions || []).map(mealOption => {
+            return (mealOption.foods || []).reduce((sum, mealOption) => {
+                var selected = mealOption.selectedFood || {};
+                return sum + (selected[key] || 0) * (selected.servings || 0)
+            }, 0);
+        });
+        if (!prepared.length) {
+            return 0;
+        }
+        return (max ? Math.max(...prepared) : Math.min(...prepared));
+    }
+
+    getSummary() {
+        var prepared = this.state.meals.map(meal => ({
+            maxCalories: this.getMealSummary(meal, 'calories', true),
+            minCalories: this.getMealSummary(meal, 'calories', false),
+            maxProtein: this.getMealSummary(meal, 'protein', true),
+            minProtein: this.getMealSummary(meal, 'protein', false),
+            maxCarbs: this.getMealSummary(meal, 'carbs', true),
+            minCarbs: this.getMealSummary(meal, 'carbs', false),
+            maxFat: this.getMealSummary(meal, 'fat', true),
+            minFat: this.getMealSummary(meal, 'fat', false),
+        }))
+
+        return (
+            <div>
+                <p>Summary max:
+                            calories: {prepared.map(prep => prep.maxCalories).reduce((sum, e) => e + sum, 0)},
+                            protein: {prepared.map(prep => prep.maxProtein).reduce((sum, e) => e + sum, 0)},
+                            fat: {prepared.map(prep => prep.maxFat).reduce((sum, e) => e + sum, 0)},
+                            carbs: {prepared.map(prep => prep.maxCarbs).reduce((sum, e) => e + sum, 0)}</p>
+                <p>Summary min:
+                            calories: {prepared.map(prep => prep.minCalories).reduce((sum, e) => e + sum, 0)},
+                            protein: {prepared.map(prep => prep.minProtein).reduce((sum, e) => e + sum, 0)},
+                            fat: {prepared.map(prep => prep.minFat).reduce((sum, e) => e + sum, 0)},
+                            carbs: {prepared.map(prep => prep.minCarbs).reduce((sum, e) => e + sum, 0)}</p>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div class="nutrition-day-container">
+                <div>
+                    <label>Training?</label>
+                    <select value={this.state.training} onChange={e => this.setState({training: e.target.value})}>
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
+                    </select>
+                </div>
+                {this.getSummary()}
                 {this.state.meals.map((meal, ix) => (
                     <div>
                         <p key={ix+'ix'}>Meal: {ix + 1}
@@ -147,13 +292,12 @@ class Nutrition extends React.Component {
                            key={ix+'remove'}
                            onClick={this.removeMeal.bind(this, ix)}>remove</a></p>
                         <Meal key={ix+'meal'}
-                              foods={this.state.foods}
+                              foods={this.props.foods}
+                              initialData={meal}
                               updateData={this.updateMealData.bind(this, ix)}/>
                     </div>
                 ))}
                 <button onClick={() => this.setState({meals: [...this.state.meals, {}]})}>Add meal</button>
-
-                <button onClick={this.generateNutritionPlan.bind(this)}>Generate</button>
             </div>
         )
     }
@@ -163,8 +307,12 @@ class Nutrition extends React.Component {
 class Meal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            mealOptions: [{}]
+        if (Object.keys(props.initialData).length) {
+            this.state = {...props.initialData};
+        } else {
+            this.state = {
+                mealOptions: [{}]
+            }
         }
     }
 
@@ -175,7 +323,7 @@ class Meal extends React.Component {
     }
 
     setState(state) {
-        this.props.updateData(state);
+        this.props.updateData({...this.state, ...state});
         super.setState(state);
     }
 
@@ -187,16 +335,17 @@ class Meal extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="meal-container">
                 {this.state.mealOptions.map((option, ix) => (
                     <div className="meal-option">
-                        <p key={ix+'ix'}>option: {ix + 1}
+                        <p key={ix+'ix'}>Option: {ix + 1}
                         <a href="#"
                            className="remove-link"
                            key={ix+'remove'}
                            onClick={this.removeOption.bind(this, ix)}>remove</a></p>
                         <MealOption key={ix+'meal'}
                                     foods={this.props.foods}
+                                    initialData={option}
                                     updateData={this.updateOptionData.bind(this, ix)}/>
                     </div>
 
@@ -211,8 +360,12 @@ class Meal extends React.Component {
 class MealOption extends React.Component {
     constructor (props) {
         super(props);
-        this.state = {
-            foods: [{}]
+        if (Object.keys(props.initialData).length) {
+            this.state = {...props.initialData};
+        } else {
+            this.state = {
+                foods: [{}]
+            }
         }
     }
 
@@ -223,7 +376,7 @@ class MealOption extends React.Component {
     }
 
     setState(state) {
-        this.props.updateData(state);
+        this.props.updateData({...this.state, ...state});
         super.setState(state);
     }
 
@@ -233,9 +386,25 @@ class MealOption extends React.Component {
         this.setState({foods: newFoods});
     }
 
+    getSummary() {
+        var prepared = this.state.foods.map(food => food.selectedFood)
+            .filter(b => b);
+        if (!prepared.length) {
+            return null;
+        }
+
+        return (
+            <p>Summary: calories: {prepared.reduce((sum, f) => sum + (f.calories || 0) * f.servings || 0, 0)},
+                        protein: {prepared.reduce((sum, f) => sum + (f.protein || 0) * f.servings || 0, 0)},
+                        fat: {prepared.reduce((sum, f) => sum + (f.fat || 0) * f.servings || 0, 0)},
+                        carbs: {prepared.reduce((sum, f) => sum + (f.carbs || 0) * f.servings || 0, 0)}</p>
+        )
+    }
+
     render() {
         return (
-            <div>
+            <div className="meal-option-container">
+                {this.getSummary()}
                 {this.state.foods.map((food, ix) => (
                     <div className="food-option">
                         <a href="#" key={ix + "remove"}
@@ -243,6 +412,7 @@ class MealOption extends React.Component {
                            onClick={this.removeFood.bind(this, ix)}>remove</a>
                         <Food key={ix + "food"}
                               foods={this.props.foods}
+                              initialData={food}
                               updateData={this.updateFoodData.bind(this, ix)} />
                     </div>
                 ))}
@@ -257,17 +427,22 @@ class MealOption extends React.Component {
 class Food extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selectedFood: {
-                name: '',
-                measurement: '',
-                default_quantity: '',
-                protein: 0,
-                calories: 0,
-                fat: 0,
-                carbs: 0,
-                existing: 0,
-                servings: 0
+        if (Object.keys(props.initialData).length) {
+            this.state = {...props.initialData};
+        } else {
+            this.state = {
+                selectedFood: {
+                    name: '',
+                    measurement: 'grams',
+                    default_quantity: 100,
+                    protein: 0,
+                    calories: 0,
+                    fat: 0,
+                    carbs: 0,
+                    existing: 0,
+                    servings: 1,
+                    note: ''
+                }
             }
         }
     }
@@ -275,20 +450,20 @@ class Food extends React.Component {
     setFoodName (name) {
         var existing = this.props.foods.filter(food => food.name === name);
         if (existing.length) {
-            this.setState({selectedFood: {...existing[0], existing: true}});
+            this.setState({selectedFood: {...existing[0], existing: true, servings:1}});
         } else {
             this.setState({selectedFood: {...this.state.selectedFood, existing: false, name: name}});
         }
     }
 
     setState(state) {
-        this.props.updateData(state);
+        this.props.updateData({...this.state, ...state});
         super.setState(state);
     }
 
     render () {
         return (
-            <div>
+            <div className="food-container">
                 <div>
                     <label className="input-label">Food name</label>
                     <input list="foods"
@@ -338,6 +513,12 @@ class Food extends React.Component {
                     <input type="number" className="number-input"
                         value={this.state.selectedFood.servings}
                         onChange={e => this.setState({selectedFood: {...this.state.selectedFood, servings: e.target.value}})}/>
+                </div>
+                <div>
+                    <label className="input-label">Note</label>
+                    <textarea type="text"
+                        value={this.state.selectedFood.note}
+                        onChange={e => this.setState({selectedFood: {...this.state.selectedFood, note: e.target.value}})}/>
                 </div>
             </div>
         )

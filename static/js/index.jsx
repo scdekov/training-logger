@@ -46,13 +46,13 @@ class App extends React.Component{
                                 <LineChart />
                             </ReactRouterDOM.Route>
                             <ReactRouterDOM.Route path="/nutrition">
+                                <NutritionPlan />
+                            </ReactRouterDOM.Route>
+                            <ReactRouterDOM.Route path="/">
                                 <div>
                                     <LogRecord excercises={this.state.excercises} />
                                     <DailyMeasurements/>
                                 </div>
-                            </ReactRouterDOM.Route>
-                            <ReactRouterDOM.Route path="/">
-                                <Nutrition />
                             </ReactRouterDOM.Route>
                         </ReactRouterDOM.Switch>
                     </div>
