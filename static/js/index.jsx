@@ -31,7 +31,7 @@ class App extends React.Component{
                                     <ReactRouterDOM.Link to="/nutrition">Nutrition</ReactRouterDOM.Link>
                                 </li>
                                 <li>
-                                    <a href="/api/log-records">All logs</a>
+                                    <ReactRouterDOM.Link to="/logs">View Logs</ReactRouterDOM.Link>
                                 </li>
                                 <li>
                                     <a href="/api/daily-measurements">All daily measurements</a>
@@ -42,6 +42,9 @@ class App extends React.Component{
                         {/* A <Switch> looks through its children <Route>s and
                         renders the first one that matches the current URL. */}
                         <ReactRouterDOM.Switch>
+                            <ReactRouterDOM.Route path="/logs">
+                                <ViewLogs />
+                            </ReactRouterDOM.Route>
                             <ReactRouterDOM.Route path="/charts">
                                 <LineChart />
                             </ReactRouterDOM.Route>

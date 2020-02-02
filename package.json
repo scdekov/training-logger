@@ -1,0 +1,19 @@
+{
+  "name": "training-logger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "static/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scdekov/training-logger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scdekov/training-logger/issues"
+  },
+  "homepage": "https://github.com/scdekov/training-logger#readme"
+}
