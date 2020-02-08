@@ -52,3 +52,11 @@ a {
 .preload-state {
     margin-bottom: 20px;
 }
+
+.prev-log-day {
+    margin-right: 20px;
+}
+
+.next-log-day {
+    margin-left: 20px;
+}

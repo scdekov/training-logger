@@ -39,9 +39,13 @@ export default class ViewLogs extends Component {
         return (
             <div>
                 <div>
-                    <a href="" onClick={e => this.changeDate(e, 'prev')}>previous day</a>
+                    <a className="prev-log-day"
+                       href=""
+                       onClick={e => this.changeDate(e, 'prev')}>previous day</a>
                     {this.state.selectedDate}
-                    <a href="" onClick={e => this.changeDate(e, 'next')}>next day</a>
+                    <a className="next-log-day"
+                       href=""
+                       onClick={e => this.changeDate(e, 'next')}>next day</a>
                 </div>
                 {this.state.logs.map((log, ix) => (
                     <div key={ix}>
