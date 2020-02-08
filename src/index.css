@@ -3,3 +3,14 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+main {
+  padding: 50px 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-nav {
+  background: #696969;
+}
