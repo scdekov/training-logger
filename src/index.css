@@ -5,8 +5,9 @@ body {
 }
 
 main {
-  padding: 50px 150px;
+  padding: 50px 100px;
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
 }
