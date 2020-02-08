@@ -16,8 +16,13 @@ class LoginRequiredTemplateView(LoginRequiredMixin, TemplateView):
 
 urlpatterns = [
     path('api/', include('training_logger.api.urls')),
-    path('', LoginRequiredTemplateView.as_view(template_name='index.html')),
     path('login', TemplateView.as_view(template_name='login.html')),
     path('', include('social_django.urls', namespace='social')),
     path('accounts/', include('django.contrib.auth.urls'))
 ]
+
+home_view = LoginRequiredTemplateView.as_view(template_name='index.html')
+home_paths = ['', 'home', 'charts', 'nutrition', 'view-logs']
+
+for home_path in home_paths:
+    urlpatterns = [path(home_path, home_view)] + urlpatterns
