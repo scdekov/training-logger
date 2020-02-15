@@ -47,6 +47,9 @@ class LogRecordViewSet(mixins.ListModelMixin,
                                        date_created__month=day.month,
                                        date_created__day=day.day)
 
+        if self.request.query_params.get('excercise'):
+            queryset = queryset.filter(excercise__name=self.request.query_params['excercise'])
+
         return queryset.filter(user=self.request.user)
 
     def create(self, request):

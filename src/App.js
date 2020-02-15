@@ -5,7 +5,7 @@ import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { API_URL } from './constants';
 import axios from "axios";
 import LogRecord from './components/log-record';
-import WeightChart from './components/charts';
+import Charts from './components/charts';
 import DailyMeasurements from './components/daily-measurements';
 import ViewLogs from './components/view-logs';
 import NutritionPlan from './components/nutrition';
@@ -106,7 +106,7 @@ class App extends Component{
                                     <ViewLogs/>
                                 </Route>
                                 <Route path="/charts">
-                                    <WeightChart />
+                                    <Charts excercises={this.state.excercises} />
                                 </Route>
                                 <Route path="/nutrition">
                                     <NutritionPlan />
