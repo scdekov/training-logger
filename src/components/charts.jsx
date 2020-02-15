@@ -84,10 +84,10 @@ class ExcerciseChart extends Component {
     }
 
     buildTooltip({ active, payload, label }){
-        if (active) {
+        if (active && payload && payload.length) {
             return (
             <div className="custom-tooltip">
-                <p className="label">{`${label} : ${payload.length ? payload[0].value : ''}`}</p>
+                <p className="label">{`${label} : ${payload[0].value}`}</p>
                 <p className="desc">{JSON.stringify(payload.map(p => p.payload))}</p>
             </div>
             );
