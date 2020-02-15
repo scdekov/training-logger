@@ -80,7 +80,7 @@ class ExcerciseChart extends Component {
             }, {});
 
             return result.concat(Object.values(groupedByweight));
-        }, [])
+        }, []).reverse();
     }
 
     buildTooltip({ active, payload, label }){
