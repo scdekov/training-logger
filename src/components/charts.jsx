@@ -87,7 +87,7 @@ class ExcerciseChart extends Component {
         if (active) {
             return (
             <div className="custom-tooltip">
-                <p className="label">{`${label} : ${payload[0].value}`}</p>
+                <p className="label">{`${label} : ${payload.length ? payload[0].value : ''}`}</p>
                 <p className="desc">{JSON.stringify(payload.map(p => p.payload))}</p>
             </div>
             );
